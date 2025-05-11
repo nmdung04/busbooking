@@ -1,0 +1,151 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Hải Hoàng Gia - Đặt vé xe khách online{% endblock %}
+<!-- Thêm CSS và JS của Flatpickr -->
+
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        flatpickr("#datePicker", {
+            dateFormat: "d-m-Y",  // Định dạng ngày-tháng-năm
+            minDate: "today",     // Không cho chọn ngày trong quá khứ
+            locale: {
+                firstDayOfWeek: 1 // Bắt đầu tuần từ thứ Hai
+            }
+        });
+    });
+</script>
+<!-- Hero Section -->
+<div class="bg-gradient-to-r from-blue-500 to-blue-700 py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">ĐẶT VÉ XE KHÁCH TRỰC TUYẾN</h1>
+            <p class="text-lg mb-8">Nhanh, An toàn, Thuận tiện trên mỗi hành trình của bạn</p>
+        </div>
+    </div>
+</div>
+
+<!-- Search Box -->
+<div class="container mx-auto px-4 -mt-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Tìm kiếm vé xe</h2>
+            <form action="{% url 'search' %}" method="get">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Điểm đi</label>
+                        <select 
+                            name="from"
+                            class="w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                        <option value="">Chọn điểm đi</option>
+                        {% for code, name in provinces %}
+                        <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Điểm đến</label>
+                        <select 
+                            name="to"
+                            class="w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                        <option value="">Chọn điểm đến</option>
+                        {% for code, name in provinces %}
+                        <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ngày đi</label>
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="datePicker"
+                                name="date"
+                                class="w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                                value="{{ current_date|date:'d-m-Y' }}"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <button 
+                            type="submit" 
+                            class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
+                        >
+                            <i class="fas fa-search w-5 h-5 mr-2"></i>
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Popular Routes -->
+<div class="container mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-6 text-center">Chuyến phổ biến</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {% for route in popular_routes %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="h-40 bg-gray-200 relative flex items-center justify-center">
+                <span class="text-2xl font-bold text-gray-500">{{route.route_name}}</span>
+            </div>
+            <div class="p-4">
+                <h3 class="font-bold text-lg">{{ route.route_name }} </h3>
+                <p class="text-gray-600 mb-3">Chỉ từ {{ route.min_base_price }}.000 VNĐ</p>
+                
+                <a 
+                    href="{% url 'search' %}?from={{ route.departure_station }}&to={{ route.arrival_station }}&date={{ current_date|date:'d-m-Y' }}"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors inline-block"
+                >
+                    Xem chuyến
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Why Choose Us -->
+<div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold mb-8 text-center">Về chúng tôi</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-search w-8 h-8 text-blue-600"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Dễ dàng đặt trước</h3>
+                <p class="text-gray-600">Chỉ với vài click</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock w-8 h-8 text-blue-600"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Thanh toán an toàn</h3>
+                <p class="text-gray-600">Đa dạng phương thức thanh toán</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-headset w-8 h-8 text-blue-600"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-2">Hỗ trợ 24/7</h3>
+                <p class="text-gray-600">Giải đáp mọi lúc mọi nơi</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
